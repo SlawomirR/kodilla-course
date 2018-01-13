@@ -26,6 +26,7 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('com.e-movimento.tinytools:privilegedaccessor:1.2.2')
+    testCompile ('org.mockito:mockito-all:1.10.19')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('junit:junit:4.12')
 }
