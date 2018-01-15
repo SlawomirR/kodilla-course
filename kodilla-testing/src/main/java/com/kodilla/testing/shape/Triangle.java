@@ -33,4 +33,12 @@ public class Triangle implements Shape {
 
         return Objects.hash(baseWidth, height);
     }
+
+    @Override
+    public String toString() {
+        return "Triangle{" +
+                "baseWidth=" + baseWidth +
+                ", height=" + height +
+                '}';
+    }
 }

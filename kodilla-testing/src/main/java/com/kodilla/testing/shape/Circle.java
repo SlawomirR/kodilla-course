@@ -15,7 +15,7 @@ public class Circle implements Shape {
 
     @Override
     public double getField() {
-        return Shape.PI * getRadiusR() * getRadiusR();
+        return Math.PI * getRadiusR() * getRadiusR();
     }
 
     @Override
@@ -30,5 +30,12 @@ public class Circle implements Shape {
     public int hashCode() {
 
         return Objects.hash(radiusR);
+    }
+
+    @Override
+    public String toString() {
+        return "Circle{" +
+                "radiusR=" + radiusR +
+                '}';
     }
 }
