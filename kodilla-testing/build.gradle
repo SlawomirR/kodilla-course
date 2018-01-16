@@ -9,6 +9,6 @@ repositories {
 
 dependencies {
     testCompile (group: 'junit', name: 'junit', version: '4.12')
-    compile('com.e-movimento.tinytools:privilegedaccessor:1.2.2')
+//    compile('com.e-movimento.tinytools:privilegedaccessor:1.2.2')
     testCompile ('org.mockito:mockito-all:1.10.19')
 }
