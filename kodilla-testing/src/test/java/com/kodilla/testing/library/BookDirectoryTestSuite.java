@@ -1,7 +1,9 @@
 package com.kodilla.testing.library;
 
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,16 +11,16 @@ import java.util.List;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
-
-/*
-Przyjmijmy następujące założenia:
-    - Jeżeli liczba zwróconych wyników będzie większa niż 20, wówczas metoda ma zwracać pustą listę - aby
-      uniemożliwić hakerom kradzież naszej pełnej listy książek :)
-    - Jeżeli ilość znaków w ciągu titleFragment będzie mniejsza niż trzy, również ma zwrócić pustą listę - z tych
-      samych powodów (względy bezpieczeństwa danych)
-    - W pozostałych przypadkach ma zwrócić listę obiektów typu Book spełniających kryteria wyszukiwania
-*/
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BookDirectoryTestSuite {
+    /*
+    Przyjmijmy następujące założenia:
+        - Jeżeli liczba zwróconych wyników będzie większa niż 20, wówczas metoda ma zwracać pustą listę - aby
+          uniemożliwić hakerom kradzież naszej pełnej listy książek :)
+        - Jeżeli ilość znaków w ciągu titleFragment będzie mniejsza niż trzy, również ma zwrócić pustą listę - z tych
+          samych powodów (względy bezpieczeństwa danych)
+        - W pozostałych przypadkach ma zwrócić listę obiektów typu Book spełniających kryteria wyszukiwania
+    */
     @Test
     public void testListBooksWithConditionsReturnList() {
         // Given
@@ -51,7 +53,7 @@ public class BookDirectoryTestSuite {
         // When
         List<Book> theListOfBooks0 = bookLibrary.listBooksWithCondition("ZeroBooks");
         List<Book> theListOfBooks15 = bookLibrary.listBooksWithCondition("Any title");
-        List<Book> theListOfBooks40 = bookLibrary.listBooksWithCondition("FourtyBooks");
+        List<Book> theListOfBooks40 = bookLibrary.listBooksWithCondition("FortyBooks");
         // Then
 
         Assert.assertEquals(0, theListOfBooks0.size());
@@ -82,5 +84,54 @@ public class BookDirectoryTestSuite {
             resultList.add(theBook);
         }
         return resultList;
+    }
+    /*
+    Zaimplementuj kolejną metodę klasy BookLibrary - listBooksInHandsOf(LibraryUser libraryUser).
+    Przetestuj tę metodę w różnych scenariuszach:
+    - gdy użytkownik nie ma wypożyczonych żadnych książek,
+    - gdy ma wypożyczoną jedną książkę,
+    - gdy ma wypożyczone 5 książek.
+    */
+
+    @Test
+    public void testListBooksInHandsOfUser0Books() {
+        // Given
+        LibraryDatabase libraryDatabaseMock = mock(LibraryDatabase.class);
+        BookLibrary bookLibrary = new BookLibrary(libraryDatabaseMock);
+        LibraryUser libraryUser = new LibraryUser("Alphonse", "Capone", "99811789215");
+        List<Book> list0BorrowedBooksByUser = generateListOfNBooks(0);
+        when(libraryDatabaseMock.listBooksInHandsOf(libraryUser)).thenReturn(list0BorrowedBooksByUser);
+        // When
+        List<Book> theListOf0Books = bookLibrary.listBooksInHandsOf(libraryUser);
+        // Then
+        Assert.assertEquals(0, theListOf0Books.size());
+    }
+
+    @Test
+    public void testListBooksInHandsOfUser1Book() {
+        // Given
+        LibraryDatabase libraryDatabaseMock = mock(LibraryDatabase.class);
+        BookLibrary bookLibrary = new BookLibrary(libraryDatabaseMock);
+        LibraryUser libraryUser = new LibraryUser("Alphonse", "Capone", "99811789215");
+        List<Book> list1BorrowedBooksByUser = generateListOfNBooks(1);
+        when(libraryDatabaseMock.listBooksInHandsOf(libraryUser)).thenReturn(list1BorrowedBooksByUser);
+        // When
+        List<Book> theListOf1Book = bookLibrary.listBooksInHandsOf(libraryUser);
+        // Then
+        Assert.assertEquals(1, theListOf1Book.size());
+    }
+
+    @Test
+    public void testListBooksInHandsOfUser5Books() {
+        // Given
+        LibraryDatabase libraryDatabaseMock = mock(LibraryDatabase.class);
+        BookLibrary bookLibrary = new BookLibrary(libraryDatabaseMock);
+        LibraryUser libraryUser = new LibraryUser("Alphonse", "Capone", "99811789215");
+        List<Book> list5BorrowedBooksByUser = generateListOfNBooks(5);
+        when(libraryDatabaseMock.listBooksInHandsOf(libraryUser)).thenReturn(list5BorrowedBooksByUser);
+        // When
+        List<Book> theListOf5Books = bookLibrary.listBooksInHandsOf(libraryUser);
+        // Then
+        Assert.assertEquals(5, theListOf5Books.size());
     }
 }
