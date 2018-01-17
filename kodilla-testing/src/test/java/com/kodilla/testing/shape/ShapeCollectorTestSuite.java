@@ -19,79 +19,60 @@ public class ShapeCollectorTestSuite {
     @Before
     public void before() {
         System.out.println("We are proceeding test method: " + getTestName().getMethodName());
-        showCurrentWorkingValues();
-        // When
-        if ( ! filledOrEmptyCheck()) { shapeCollector.addFigure(testingShape); }
     }
 
     @After
     public void after() {
-        showCurrentWorkingValues();
-        System.out.println("We finished test method: " + getTestName().getMethodName());
+        System.out.println("\tWe finished test method: " + getTestName().getMethodName());
     }
 
     @Test
-    public void test_1_AddFigure() {
-        // Then
-        Assert.assertTrue(shapeCollector.getShapeCollectorSize() > 0);
-    }
-
-    @Test
-    public void test_6_RemoveFigure() {
+    public void test_1_shouldAddOneFigure() {
         // When
+        shapeCollector.addFigure(testingShape);
+        // Then
+        Assert.assertEquals(1, shapeCollector.getShapeCollectorSize());
+    }
+
+    @Test
+    public void test_5_shouldRemoveOneFigureAfterAddingItFirst() {
+        // When
+        shapeCollector.addFigure(testingShape);
+        Assert.assertTrue(checkIfThereAreDataToProceed());
         shapeCollector.removeFigure(testingShape);
         // Then
         Assert.assertEquals(0, shapeCollector.getShapeCollectorSize());
     }
 
     @Test
-    public void test_7_RemoveFigureException() {
+    public void test_4_shouldReturnFalseForRemovingNonExistingFigure() {
         // When
-        shapeCollector.removeFigure(testingShape);
         shapeCollector.removeFigure(testingShape); // it simulates wrong object
         // Then
-        System.out.println();
         Assert.assertFalse("No such shape to delete!", shapeCollector.removeFigure(testingShape));
     }
 
-    // Then
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void test_2_GetFigure() {
-        // When
-        shapeCollector.getFigure(-1);
-    }
-
     @Test
-    public void test_3_GetFigure() {
+    public void test_2_shouldReturnProperFigure() {
         // When
-        Shape whatIsTheFirstAddedShape = shapeCollector.getFigure(0);
+        shapeCollector.addFigure(testingShape);
         // Then
-        Assert.assertEquals(testingShape, whatIsTheFirstAddedShape);
+        Assert.assertEquals(testingShape, shapeCollector.getFigure(0));
     }
 
     @Test
-    public void test_5_ShowFigures() {
+    public void test_3_shouldPrintSomeFigureDescription() {
         // When
         shapeCollector.removeFigure(testingShape);
         // Then
-        Assert.assertNotEquals("Unexpected empty string!", "", shapeCollector.showFigures());
+        Assert.assertFalse("Description should always give some information!", shapeCollector.showFigures().isEmpty());
     }
 
-    @Test
-    public void test_4_ShowFigures() {
-        // Then
-        Assert.assertNotEquals("Unexpected null value!", null, shapeCollector.showFigures());
-    }
-
-    private void showCurrentWorkingValues() {
-        System.out.println("\t" + getTestName().getMethodName() + " value: " + shapeCollector.getShapeCollectorSize());
-    }
-
-    private boolean filledOrEmptyCheck() {
+    private boolean checkIfThereAreDataToProceed() {
         if (shapeCollector.getShapeCollectorSize() != 0) {
             return true;
         } else {
-            System.out.println("First, make sure that shapeCollector.addFigure() method is working properly to pass this test!");
+            System.out.println("\tFirst, make sure that shapeCollector.addFigure() method is working properly to prepare to pass this test!");
             return false;
         }
     }

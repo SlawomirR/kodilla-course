@@ -35,7 +35,8 @@ public class ShapeCollector {
     }
 
     String showFigures() {
-/*        if (shapeCollector.size() == 0) {
+/*
+        if (shapeCollector.size() == 0) {
             return "The stack of shapes is empty!";
         }
         StringBuilder stringBuilder = new StringBuilder();
