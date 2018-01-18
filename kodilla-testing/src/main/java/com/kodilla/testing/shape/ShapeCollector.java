@@ -14,28 +14,25 @@ public class ShapeCollector {
     }
 
     void addFigure(Shape shape) {
-//        shapeCollector.add(shape);
+        shapeCollector.add(shape);
     }
 
     boolean removeFigure(Shape shape) {
-/*
         if ( ! shapeCollector.contains(shape)) {
             return false;
         } else {
             shapeCollector.remove(shape);
             return true;
         }
-*/
-        return true;
+//        return true;
     }
 
     Shape getFigure(int index) {
-//        return shapeCollector.get(index);
-        return null;
+        return shapeCollector.get(index);
+//        return null;
     }
 
     String showFigures() {
-/*
         if (shapeCollector.size() == 0) {
             return "The stack of shapes is empty!";
         }
@@ -44,7 +41,6 @@ public class ShapeCollector {
             stringBuilder.append(temp);
         }
         return stringBuilder.toString();
-*/
-        return null;
+//        return null;
     }
 }
