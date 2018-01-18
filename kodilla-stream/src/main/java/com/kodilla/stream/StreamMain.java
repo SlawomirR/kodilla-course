@@ -1,5 +1,6 @@
 package com.kodilla.stream;
 
+import com.kodilla.stream.beautifier.PoemBeautifier;
 import com.kodilla.stream.lambda.*;
 import com.kodilla.stream.reference.FunctionalCalculator;
 
@@ -33,5 +34,14 @@ public class StreamMain {
         expressionExecutor.executeExpression(3, 4, FunctionalCalculator::addAToB);
         expressionExecutor.executeExpression(3, 4, FunctionalCalculator::subBFromA);
         expressionExecutor.executeExpression(3, 4, FunctionalCalculator::divideAByB);
+
+        // Zadanie 7.1
+        PoemBeautifier poemBeautifier = new PoemBeautifier();
+        System.out.println(poemBeautifier.beautify("J", (text) -> "ava" + text + "ava"));
+        System.out.println(poemBeautifier.beautify("kota.", (text) -> "Ala ma " + text.toUpperCase()));
+        System.out.println(poemBeautifier.beautify("kota.", String::toUpperCase));
+        System.out.println(poemBeautifier.beautify("Ala ma kota a kot ma Ale", (text) ->
+            {StringBuilder sb = new StringBuilder(text); return sb.reverse().toString();})
+        );
     }
 }
