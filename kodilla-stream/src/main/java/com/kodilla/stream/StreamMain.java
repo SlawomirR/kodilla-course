@@ -1,47 +1,21 @@
 package com.kodilla.stream;
 
-import com.kodilla.stream.beautifier.PoemBeautifier;
-import com.kodilla.stream.lambda.*;
-import com.kodilla.stream.reference.FunctionalCalculator;
+import com.kodilla.stream.forumuser.Forum;
+import com.kodilla.stream.forumuser.ForumUser;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StreamMain {
     public static void main(String[] args) {
-        System.out.println("Welcome to module 7 - Stream");
+        Forum forum = new Forum();
+        Map<Integer, ForumUser> mapWithUsersList =
+                forum.getForumUsersList().stream()
+                .filter(f -> f.getSex() == 'M')
+                .filter(f -> 2018 - f.getDateOfBirth().getYear() > 19)
+                .filter(f -> f.getPostsQuantity() > 0)
+                .collect(Collectors.toMap(ForumUser::getUserId, f -> f));
 
-        SaySomething saySomething = new SaySomething();
-        saySomething.say();
-
-        Processor processor = new Processor();
-        ExecuteSaySomething executeSaySomething = new ExecuteSaySomething();
-        processor.execute(executeSaySomething);
-
-        Processor processor1 = new Processor();
-        Executor codeToExecute = () -> System.out.println("This is an example text 3.");
-        processor1.execute(codeToExecute);
-        // or
-        processor1.execute(() -> System.out.println("This is an example text 4."));
-
-        ExpressionExecutor expressionExecutor = new ExpressionExecutor();
-
-        System.out.println("Calculating expressions with lambdas");
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a + b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a - b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a * b);
-        expressionExecutor.executeExpression(10, 5, (a, b) -> a / b);
-
-        System.out.println("Calculating expressions with method references");
-        expressionExecutor.executeExpression(3, 4, FunctionalCalculator::multiplyAByB);
-        expressionExecutor.executeExpression(3, 4, FunctionalCalculator::addAToB);
-        expressionExecutor.executeExpression(3, 4, FunctionalCalculator::subBFromA);
-        expressionExecutor.executeExpression(3, 4, FunctionalCalculator::divideAByB);
-
-        // Zadanie 7.1
-        PoemBeautifier poemBeautifier = new PoemBeautifier();
-        System.out.println(poemBeautifier.beautify("J", (text) -> "ava" + text + "ava"));
-        System.out.println(poemBeautifier.beautify("kota.", (text) -> "Ala ma " + text.toUpperCase()));
-        System.out.println(poemBeautifier.beautify("kota.", String::toUpperCase));
-        System.out.println(poemBeautifier.beautify("Ala ma kota a kot ma Ale", (text) ->
-            {StringBuilder sb = new StringBuilder(text); return sb.reverse().toString();})
-        );
+        mapWithUsersList.entrySet().stream().forEach(System.out::println);
     }
 }
