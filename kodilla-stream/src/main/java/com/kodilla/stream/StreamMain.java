@@ -3,6 +3,7 @@ package com.kodilla.stream;
 import com.kodilla.stream.forumuser.Forum;
 import com.kodilla.stream.forumuser.ForumUser;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,6 @@ public class StreamMain {
                 .filter(f -> f.getPostsQuantity() > 0)
                 .collect(Collectors.toMap(ForumUser::getUserId, f -> f));
 
-        mapWithUsersList.entrySet().stream().forEach(System.out::println);
+        mapWithUsersList.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).forEach(System.out::println);
     }
 }
