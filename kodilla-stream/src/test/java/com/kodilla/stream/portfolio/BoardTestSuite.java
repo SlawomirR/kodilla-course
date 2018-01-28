@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -130,5 +131,25 @@ public class BoardTestSuite {
                 .count();
         //Then
         Assert.assertEquals(2, longTasks);
+    }
+
+    @Test
+    public void testAddTaskListAverageWorkingOnTask() {
+        // Given
+        Board project = prepareTestData();
+        // When
+        List<TaskList> inProgressTasks = new ArrayList<>();
+        inProgressTasks.add(new TaskList("In progress"));
+        double averageDaysOfAllWorkingTasks = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
+                .flatMap(t -> t.getTasks().stream())
+                .map(Task::getCreated)
+                .filter(d -> d.compareTo(LocalDate.now()) < 0)
+                .mapToLong(d -> d.until(LocalDate.now(), ChronoUnit.DAYS))
+                .average()
+                .orElse(0);
+        System.out.println("Without including today's started project! Average: " + averageDaysOfAllWorkingTasks);
+        // Then
+        Assert.assertEquals(15, averageDaysOfAllWorkingTasks, 0);
     }
 }
