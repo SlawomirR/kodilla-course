@@ -7,22 +7,15 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class FileReader {
-    public void readFile() throws FileReaderException {
+public class FileReaderWithoutHandling {
+    public void readFile() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("file/names.txt")).getFile());
 
         System.out.println(file.getPath());
 //        Path path = Paths.get(file.getPath());
 //        Path path = Paths.get("file/names.txt");
-        try (Stream<String> fileLines = Files.lines(Paths.get("file/names.txt"))) {
-            fileLines.forEach(System.out::println);
-        } catch (IOException e) {
-            System.out.println("Oj joj joj!!! Bam! ;-)  " + e);
-//            e.printStackTrace();
-            throw new FileReaderException();
-        } finally {
-            System.out.println("\nInformation - that is always true.");
-        }
+        Stream<String> fileLines = Files.lines(Paths.get(file.getPath()));
+        fileLines.forEach(System.out::println);
     }
 }
