@@ -7,11 +7,12 @@ class FindFlight {
 
     FindFlight() {
         canIFlyTo = new HashMap<>();
+        canIFlyTo.put("Airport", true);
+        canIFlyTo.put("No Airport", false);
     }
 
     void findFlight(Flight flight) throws RouteNotFoundException {
-        canIFlyTo.put("Airport", true);
-        canIFlyTo.put("No Airport", false);
+
         if ( ! canIFlyTo.containsKey(flight.getArrivalAirport())) {
             throw new RouteNotFoundException("Destination airport not found!");
         } else {
