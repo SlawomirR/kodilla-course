@@ -9,15 +9,6 @@ class MovieStore {
     private static final int ENGLISH_LANGUAGE = 1;
 
     public static void main(String[] args) {
-        MovieStore movieStore = new MovieStore();
-
-        System.out.println(movieStore.getMovies()
-                .entrySet()
-                .stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(TITLE_DELIMITER))
-        );
-
         System.out.println(printAllMovieTitlesInOneLine(ENGLISH_LANGUAGE, TITLE_DELIMITER));
     }
 
