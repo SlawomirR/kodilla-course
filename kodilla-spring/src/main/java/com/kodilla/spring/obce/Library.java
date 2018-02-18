@@ -1,30 +1,17 @@
-package com.kodilla.spring.library;
+package com.kodilla.spring.obce;
 
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@org.springframework.boot.autoconfigure.SpringBootApplication
 @Service
-public class Library {
+public final class Library {
     private final List<String> books = new ArrayList<>();
-
-    private LibraryDbController libraryDbController;
-
-/*
-    @Autowired
-    public void setLibraryDbController(LibraryDbController libraryDbController) {
-        this.libraryDbController = libraryDbController;
-    }
-*/
+    private final LibraryDbController libraryDbController;
 
     public Library(final LibraryDbController libraryDbController) {
         this.libraryDbController = libraryDbController;
-    }
-
-    public Library() {
-        // do nothing
     }
 
     public void saveToDb() {

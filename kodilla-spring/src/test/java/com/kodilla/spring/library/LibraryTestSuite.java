@@ -15,7 +15,7 @@ public class LibraryTestSuite {
     @Test
     public void test01Context() {
         // Given
-        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring");
+        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring.library");
         // When & Then
         System.out.println("===== Beans list: ==== >>");
         Arrays.stream(context.getBeanDefinitionNames())
@@ -37,7 +37,7 @@ public class LibraryTestSuite {
     @Test
     public void testLoadFromDb() {
         // Given
-        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring");
+        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring.library");
         Library library = context.getBean(Library.class);
         // When
         library.loadFromDb();
@@ -48,7 +48,7 @@ public class LibraryTestSuite {
     @Test
     public void testSaveToDb() {
         // Given
-        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring");
+        ApplicationContext context = new AnnotationConfigApplicationContext("com.kodilla.spring.library");
         Library library = context.getBean(Library.class);
         // When
         library.saveToDb();
