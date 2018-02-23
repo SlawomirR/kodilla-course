@@ -11,7 +11,6 @@ public class BoardTestSuite {
     @Test
     public void testTaskAdd() {
         // Given
-
         String oneTaskToDoList = "and One_taskListString";
         List<String> tasksListToDoList = Arrays.asList("1. a", "2. b", "3. c");
 
@@ -23,33 +22,23 @@ public class BoardTestSuite {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(BoardConfig.class);
         Board board = context.getBean(Board.class);
-        TaskList toDoList = (TaskList)context.getBean("toDoList");
-        TaskList inProgressList = (TaskList)context.getBean("inProgressList");
-        TaskList doneList = (TaskList)context.getBean("doneList");
 
         // When
-        board.setTasksListToDoList(tasksListToDoList);
-        board.setStringToDoList(oneTaskToDoList);
-        toDoList.addTask("last minute tasks");
+        board.getToDoList().getTasks().addAll(tasksListToDoList);
+        board.getToDoList().getTasks().add(oneTaskToDoList);
 
-        board.setTasksListInProgressList(tasksListInProgressList);
-        board.setStringInProgressList(oneTaskInProgressList);
-        inProgressList.addTask("and another special task");
+        board.getInProgressList().getTasks().addAll(tasksListInProgressList);
+        board.getInProgressList().getTasks().add(oneTaskInProgressList);
 
-        board.setTasksListDoneList(tasksListDoneList);
-        board.setStringDoneList(oneTaskDoneList);
-        board.getDoneList().getTasks().add("SILENTLY NOT ADDED BECAUSE OF READ ONLY METHOD. Is this OK??????????");
-        doneList.addTask("archived task ;-)");
+        board.getDoneList().getTasks().addAll(tasksListDoneList);
+        board.getDoneList().getTasks().add(oneTaskDoneList);
         // Then
         board.getToDoList().getTasks().stream().map(s -> s + System.getProperty("line.separator")).forEach(System.out::print);
-        board.readTasksToDoList();
 
         System.out.println("=====================");
         board.getInProgressList().getTasks().stream().map(s -> s + System.getProperty("line.separator")).forEach(System.out::print);
-        board.readTasksInProgressList();
 
         System.out.println("=====================");
         board.getDoneList().getTasks().stream().map(s -> s + System.getProperty("line.separator")).forEach(System.out::print);
-        board.readTasksDoneList();
     }
 }
