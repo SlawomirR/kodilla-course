@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@org.springframework.boot.autoconfigure.SpringBootApplication
 @Service
 public class Library {
     private final List<String> books = new ArrayList<>();
