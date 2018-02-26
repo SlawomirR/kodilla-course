@@ -3,86 +3,24 @@ package com.kodilla.rps;
 import java.util.Scanner;
 
 class GameUtils {
-    private int roundNumberToWin;
-    private int currentRoundNumber = 1;
-    private boolean exitConfirmed = false;
-    private int[] scoresArray = {0, 0};
-
-    int getRoundNumberToWin() {
-        return roundNumberToWin;
-    }
-
-    void setRoundNumberToWin(int roundNumberToWin) {
-        this.roundNumberToWin = roundNumberToWin;
-    }
-
-    int getCurrentRoundNumber() {
-        return currentRoundNumber;
-    }
-
-    void setCurrentRoundNumber(int currentRoundNumber) {
-        this.currentRoundNumber = currentRoundNumber;
-    }
-
-    private void setScoresArray(int[] scoresArray) {
-        this.scoresArray = scoresArray;
-    }
-
-    boolean isExitConfirmed() {
-        return exitConfirmed;
-    }
-
-    void setExitConfirmed() {
-        this.exitConfirmed = true;
-    }
-
-    private int[] getScoresArray() {
-        return scoresArray;
-    }
-
-    private void setComputerScore(int computerScore) {
-        this.scoresArray[0] = computerScore;
-    }
-
-    int getComputerScore() {
-        return getScoresArray()[0];
-    }
-
-    void increaseComputerScoreByOne() {
-        setComputerScore(getComputerScore()+1);
-    }
-
-    private void setHumanScore(int humanScore) {
-        this.scoresArray[1] = humanScore;
-    }
-
-    int getHumanScore() {
-        return getScoresArray()[1];
-    }
-
-    private void increaseHumanScoreByOne() {
-        setHumanScore(getHumanScore()+1);
-    }
-
-    private void increaseCurrentRoundNumberByOne() {
-        setCurrentRoundNumber(getCurrentRoundNumber()+1);
-    }
-
-    void resetScoresArrayForNewGame() {
-        setScoresArray(new int[]{0,0});
-    }
+    static final int COMPUTER_ARRAY_INDEX = 0;
+    static final int HUMAN_ARRAY_INDEX = 1;
+    int roundNumberToWin;
+    int currentRoundNumber = 1;
+    boolean exitConfirmed = false;
+    int[] scoresArray = {0, 0};
 
     void checkIfGameIsEnded() {
-        if (getRoundNumberToWin() <= Math.abs(getComputerScore() - getHumanScore())) {
-            setExitConfirmed();
+        if (roundNumberToWin <= Math.abs(scoresArray[COMPUTER_ARRAY_INDEX] - scoresArray[HUMAN_ARRAY_INDEX])) {
+            exitConfirmed = true;
         }
     }
 
     String showGameSummary(String humanName) {
         String result = "---=> The state of the great game \"Computer\" versus \"" + humanName
-                + "\" is: " + getComputerScore() + " : " + getHumanScore()
-                + " and completed rounds we have: " + getCurrentRoundNumber();
-        increaseCurrentRoundNumberByOne();
+                + "\" is: " + scoresArray[COMPUTER_ARRAY_INDEX] + " : " + scoresArray[HUMAN_ARRAY_INDEX]
+                + " and completed rounds we have: " + currentRoundNumber;
+        currentRoundNumber++;
         return result;
     }
 
@@ -101,14 +39,14 @@ class GameUtils {
             case "PLAYER_WINNER":
                 result = "\"" + humanName + "\" won because \"Computer\" chose: "
                         + GameChoicesEnum.convertCharToStringName(Character.forDigit(computerChoiceInteger, 10));
-                increaseHumanScoreByOne();
+                scoresArray[HUMAN_ARRAY_INDEX]++;
                 break;
             case "COMPUTER_WINNER":
                 result = "\"Computer\" won because chose: "
                         + GameChoicesEnum.convertCharToStringName(Character.forDigit(computerChoiceInteger, 10))
                         + " and \"" + humanName + "\" chose: "
                         + GameChoicesEnum.convertCharToStringName(Character.forDigit(humanChoiceInteger, 10));
-                increaseComputerScoreByOne();
+                scoresArray[COMPUTER_ARRAY_INDEX]++;
                 break;
         }
         return result;
@@ -142,6 +80,6 @@ class GameUtils {
             System.out.print("Enter the number corresponding to the expected number of rounds won relative to the opponent: ");
             takenUserInputInteger = takeUserScannerInputAsChar(userInputsScanner);
         }
-        setRoundNumberToWin(Character.getNumericValue(takenUserInputInteger));
+        roundNumberToWin = Character.getNumericValue(takenUserInputInteger);
     }
 }

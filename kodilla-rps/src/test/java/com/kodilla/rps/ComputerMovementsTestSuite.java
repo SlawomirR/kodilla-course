@@ -31,22 +31,21 @@ public class ComputerMovementsTestSuite {
     @Test
     public void testGetComputerChoiceAsString() {
         // Given
-        String text = "text";
+        ComputerMovements computerMovements = new ComputerMovements();
         // When
+        computerMovements.computerGameChoice(true);
         String result = computerMovements.getComputerChoiceAsString();
         // Then
-        System.out.println(text + " <--> " + result);
-        Assert.assertEquals(text, result);
+        Assert.assertTrue(result.length() > 0);
     }
 
     @Test
     public void test01TrueForComputerGameChoice() {
         // Given
-        boolean trueValue = true;
         int maxValueExpected = 5;
         // When
-        int maxValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(trueValue)).max().getAsInt();
-        int minValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(trueValue)).min().getAsInt();
+        int maxValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(true)).max().getAsInt();
+        int minValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(true)).min().getAsInt();
         // Then
         System.out.println(maxValueExpected + " <--> " + maxValue);
         Assert.assertEquals(maxValueExpected, maxValue);
@@ -58,11 +57,10 @@ public class ComputerMovementsTestSuite {
     public void test02FalseForComputerGameChoice() {
         // Given
         ComputerMovements computerMovements = new ComputerMovements();
-        boolean falseValue = false;
         int maxValueExpected = 3;
         // When
-        int maxValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(falseValue)).max().getAsInt();
-        int minValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(falseValue)).min().getAsInt();
+        int maxValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(false)).max().getAsInt();
+        int minValue = IntStream.range(0, endOfStepsNumber).map(s -> computerMovements.computerGameChoice(false)).min().getAsInt();
         // Then
         System.out.println(maxValueExpected + " <--> " + maxValue);
         Assert.assertEquals(maxValueExpected, maxValue);

@@ -25,7 +25,7 @@ public class HumanChoicesAndMovementsTestSuite {
         // When
         //do nothing
         // Then
-        Assert.assertTrue( ! humanChoicesAndMovements.isGame5PiecesVariety());
+        Assert.assertTrue( ! humanChoicesAndMovements.isGame5PiecesVariety);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class HumanChoicesAndMovementsTestSuite {
         // When
         int initialValueZero = 0;
         // Then
-        Assert.assertEquals(initialValueZero, humanChoicesAndMovements.getHumanChoiceAsInteger());
+        Assert.assertEquals(initialValueZero, humanChoicesAndMovements.humanChoiceAsInteger);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class HumanChoicesAndMovementsTestSuite {
         String expectedTextRock = "Rock";
         // When
         humanChoicesAndMovements.setHumanChoiceAsString(humanMovementChoice);
-        String result = humanChoicesAndMovements.getHumanChoiceAsString();
+        String result = humanChoicesAndMovements.humanChoiceAsString;
         // Then
         System.out.println(expectedTextRock + " <--> " + result);
         Assert.assertEquals(expectedTextRock, result);
@@ -58,7 +58,7 @@ public class HumanChoicesAndMovementsTestSuite {
         int expectedIntegerThree = 3;
         // When
         humanChoicesAndMovements.setHumanChoiceAsInteger(humanMovementChoice);
-        int result = humanChoicesAndMovements.getHumanChoiceAsInteger();
+        int result = humanChoicesAndMovements.humanChoiceAsInteger;
         // Then
         System.out.println(expectedIntegerThree + " <--> " + result);
         Assert.assertEquals(expectedIntegerThree, result);
@@ -103,7 +103,7 @@ public class HumanChoicesAndMovementsTestSuite {
         // When
         humanChoicesAndMovements.acceptOnlyKeyEChar(charE);
         // Then
-        Assert.assertTrue(humanChoicesAndMovements.isGame5PiecesVariety());
+        Assert.assertTrue(humanChoicesAndMovements.isGame5PiecesVariety);
     }
 
     @Test
@@ -185,7 +185,7 @@ public class HumanChoicesAndMovementsTestSuite {
         // When
         int expectedInt = 3;
         humanChoicesAndMovements.humanMovement(userInputsScanner, userName);
-        int result = humanChoicesAndMovements.getHumanChoiceAsInteger();
+        int result = humanChoicesAndMovements.humanChoiceAsInteger;
         // Then
         Assert.assertEquals(expectedInt, result);
         userInputsScanner.close();
@@ -199,7 +199,7 @@ public class HumanChoicesAndMovementsTestSuite {
         // When
         String expectedString = "Scissors";
         humanChoicesAndMovements.humanMovement(userInputsScanner, userName);
-        String result = humanChoicesAndMovements.getHumanChoiceAsString();
+        String result = humanChoicesAndMovements.humanChoiceAsString;
                 // Then
         Assert.assertEquals(expectedString, result);
         userInputsScanner.close();

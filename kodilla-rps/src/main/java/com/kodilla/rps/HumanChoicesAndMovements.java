@@ -3,28 +3,12 @@ package com.kodilla.rps;
 import java.util.Scanner;
 
 class HumanChoicesAndMovements {
-    private String humanChoiceAsString;
-    private int humanChoiceAsInteger = 0;
-    private boolean isGame5PiecesVariety = false;
-
-    boolean isGame5PiecesVariety() {
-        return isGame5PiecesVariety;
-    }
-
-    void setGame5PiecesVariety(boolean isGame5PiecesVariety) {
-        this.isGame5PiecesVariety = isGame5PiecesVariety;
-    }
-
-    String getHumanChoiceAsString() {
-        return humanChoiceAsString;
-    }
+    String humanChoiceAsString;
+    int humanChoiceAsInteger = 0;
+    boolean isGame5PiecesVariety = false;
 
     void setHumanChoiceAsString(char humanMovementChoice) {
         this.humanChoiceAsString = GameChoicesEnum.convertCharToStringName(humanMovementChoice);
-    }
-
-    int getHumanChoiceAsInteger() {
-        return humanChoiceAsInteger;
     }
 
     void setHumanChoiceAsInteger(char humanMovementChoice) {
@@ -43,31 +27,31 @@ class HumanChoicesAndMovements {
 
     void acceptOnlyKeyEChar(char enteredChar) {
         if (enteredChar == 'e') {
-            setGame5PiecesVariety(true);
+            isGame5PiecesVariety = true;
         }
     }
 
     boolean askGameVariety(Scanner userInputsScanner) {
         System.out.print(GameMenu.showGameMenuCharForGameVariety());
         acceptOnlyKeyEChar(takeUserScannerInputAsChar(userInputsScanner));
-        return isGame5PiecesVariety();
+        return isGame5PiecesVariety;
     }
 
     String humanMovement(Scanner inputScanner, String humanName) {
         System.out.print("\nPlease, \"" + humanName + "\", make decision: ");
         char humanMovementChoice = takeUserScannerInputAsChar(inputScanner);
         setHumanChoiceAsString(humanMovementChoice);
-        switch (getHumanChoiceAsString()) {
+        switch (humanChoiceAsString) {
             case "Lizard":
             case "Spock":
-                if ( ! isGame5PiecesVariety()) {
+                if ( ! isGame5PiecesVariety) {
                     System.out.print("You chose 3 pieces game variety. Choose wisely:");
                     humanMovement(inputScanner, humanName);
                 }
             case "Rock":
             case "Paper":
             case "Scissors":
-                System.out.println("\"" + humanName + "\" chosen => " + getHumanChoiceAsString());
+                System.out.println("\"" + humanName + "\" chosen => " + humanChoiceAsString);
                 setHumanChoiceAsInteger(humanMovementChoice);
                 break;
             case "Exit":
@@ -76,10 +60,10 @@ class HumanChoicesAndMovements {
                 confirmCancelCurrentGame(inputScanner, humanName);
                 break;
             default:
-                System.out.println("===> " + getHumanChoiceAsString());
+                System.out.println("===> " + humanChoiceAsString);
                 humanMovement(inputScanner, humanName);
         }
-        return getHumanChoiceAsString();
+        return humanChoiceAsString;
     }
     
     char takeUserScannerInputAsChar(Scanner inputScanner) {
@@ -92,6 +76,6 @@ class HumanChoicesAndMovements {
         } else {
             setHumanChoiceAsInteger('0');
         }
-        return getHumanChoiceAsInteger();
+        return humanChoiceAsInteger;
     }
 }

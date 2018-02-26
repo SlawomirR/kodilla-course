@@ -19,39 +19,18 @@ public class GameUtilsTestSuite {
 
     @Test
     public void testCurrentRoundNumberInitialValue() {
-        Assert.assertEquals(1, gameUtils.getCurrentRoundNumber());
+        Assert.assertEquals(1, gameUtils.currentRoundNumber);
     }
 
     @Test
     public void testScoresArrayInitialValue() {
-        Assert.assertEquals(0, gameUtils.getComputerScore());
-        Assert.assertEquals(0, gameUtils.getHumanScore());
+        Assert.assertEquals(0, gameUtils.scoresArray[GameUtils.COMPUTER_ARRAY_INDEX]);
+        Assert.assertEquals(0, gameUtils.scoresArray[GameUtils.HUMAN_ARRAY_INDEX]);
     }
 
     @Test
     public void isExitConfirmed() {
-        Assert.assertEquals(false, gameUtils.isExitConfirmed());
-    }
-
-    @Test
-    public void setExitConfirmed() {
-        gameUtils.setExitConfirmed();
-        Assert.assertEquals(true, gameUtils.isExitConfirmed());
-    }
-
-    @Test
-    public void resetScoresArrayForNewGame() {
-        gameUtils.resetScoresArrayForNewGame();
-        Assert.assertEquals(0, gameUtils.getComputerScore());
-        Assert.assertEquals(0, gameUtils.getHumanScore());
-    }
-
-    @Test
-    public void checkIfGameIsEnded() {
-        gameUtils.setRoundNumberToWin(0);
-        gameUtils.increaseComputerScoreByOne();
-        gameUtils.checkIfGameIsEnded();
-        Assert.assertTrue(gameUtils.isExitConfirmed());
+        Assert.assertEquals(false, gameUtils.exitConfirmed);
     }
 
     @Test
@@ -71,9 +50,9 @@ public class GameUtilsTestSuite {
     public void test02ShowAndCompareMovementsResult() {
         int computerScore = 4;
         int humanScore = 1;
-        int before = gameUtils.getHumanScore();
+        int before = gameUtils.scoresArray[GameUtils.HUMAN_ARRAY_INDEX];
         gameUtils.showAndCompareMovementsResult(computerScore, humanScore, "Comp_Winner");
-        int result = gameUtils.getHumanScore();
+        int result = gameUtils.scoresArray[GameUtils.HUMAN_ARRAY_INDEX];
         Assert.assertEquals(before+1, result);
     }
 
@@ -81,9 +60,9 @@ public class GameUtilsTestSuite {
     public void test03ShowAndCompareMovementsResult() {
         int computerScore = 2;
         int humanScore = 5;
-        int before = gameUtils.getComputerScore();
+        int before = gameUtils.scoresArray[GameUtils.COMPUTER_ARRAY_INDEX];
         gameUtils.showAndCompareMovementsResult(computerScore, humanScore, "User_Winner");
-        int result = gameUtils.getComputerScore();
+        int result = gameUtils.scoresArray[GameUtils.COMPUTER_ARRAY_INDEX];
         Assert.assertEquals(before+1, result);
     }
 
@@ -117,7 +96,7 @@ public class GameUtilsTestSuite {
         gameUtils.askRoundNumberToWin(userInputsScanner);
         int expectedInt = 2;
         // Then
-        Assert.assertEquals(expectedInt, gameUtils.getRoundNumberToWin());
+        Assert.assertEquals(expectedInt, gameUtils.roundNumberToWin);
     }
 
     @Test
@@ -132,7 +111,7 @@ public class GameUtilsTestSuite {
         gameUtils.askRoundNumberToWin(userInputsScanner);
         int expectedInt = 2;
         // Then
-        Assert.assertEquals(expectedInt, gameUtils.getRoundNumberToWin());
+        Assert.assertEquals(expectedInt, gameUtils.roundNumberToWin);
     }
 
     @Test
@@ -147,7 +126,7 @@ public class GameUtilsTestSuite {
         gameUtils.askRoundNumberToWin(userInputsScanner);
         int expectedInt = 2;
         // Then
-        Assert.assertEquals(expectedInt, gameUtils.getRoundNumberToWin());
+        Assert.assertEquals(expectedInt, gameUtils.roundNumberToWin);
     }
 
     @Test(expected = IllegalStateException.class)

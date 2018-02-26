@@ -35,37 +35,37 @@ class GameProcessor {
                 setHumanName(humanChoicesAndMovements.askHumanName(userInputsScanner));
                 gameUtils.askRoundNumberToWin(userInputsScanner);
             case "During the Game":
-                System.out.println(GameMenu.showGameMenu(humanChoicesAndMovements.isGame5PiecesVariety()));
+                System.out.println(GameMenu.showGameMenu(humanChoicesAndMovements.isGame5PiecesVariety));
                 humanChoicesAndMovements.humanMovement(userInputsScanner, getHumanName());
-                if (humanChoicesAndMovements.getHumanChoiceAsInteger() > 0) {
+                if (humanChoicesAndMovements.humanChoiceAsInteger > 0) {
                     setUserWillingSituations("During the Game");
-                    computerMovements.computerGameChoice(humanChoicesAndMovements.isGame5PiecesVariety());
+                    computerMovements.computerGameChoice(humanChoicesAndMovements.isGame5PiecesVariety);
                     System.out.println(gameUtils.showAndCompareMovementsResult(
                             computerMovements.getComputerChoiceAsInteger(),
-                            humanChoicesAndMovements.getHumanChoiceAsInteger(),
+                            humanChoicesAndMovements.humanChoiceAsInteger,
                             getHumanName())
                     );
                     System.out.println(gameUtils.showGameSummary(getHumanName()));
                     gameUtils.checkIfGameIsEnded();
                 } else {
-                    setUserWillingSituations(humanChoicesAndMovements.getHumanChoiceAsString());
+                    setUserWillingSituations(humanChoicesAndMovements.humanChoiceAsString);
                 }
                 break;
             case "Exit":
-                gameUtils.setExitConfirmed();
+                gameUtils.exitConfirmed = true;
                 break;
         }
         decideIfContinueOrExitGame();
     }
 
     private void resetGameDataForNewGame() {
-        gameUtils.resetScoresArrayForNewGame();
-        gameUtils.setCurrentRoundNumber(1);
-        humanChoicesAndMovements.setGame5PiecesVariety(false);
+        gameUtils.scoresArray = new int[]{0,0};
+        gameUtils.currentRoundNumber = 1;
+        humanChoicesAndMovements.isGame5PiecesVariety = false;
     }
 
     private void decideIfContinueOrExitGame() {
-        if (gameUtils.isExitConfirmed()) {
+        if (gameUtils.exitConfirmed) {
             gameUtils.sayGoodbyeAndCloseScanner(userInputsScanner);
         } else {
             startTheGame();
