@@ -58,8 +58,8 @@ public class Item {
         return quantity;
     }
 
-    @Transient
     @Column(name = "VALUE")
+    @NotNull
     public BigDecimal getValue() {
         return value;
     }
