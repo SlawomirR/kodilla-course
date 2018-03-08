@@ -1,7 +1,11 @@
 package com.kodilla.good.patterns.food2Door;
 
-import java.math.BigDecimal;
+import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Getter
 public class SupplierProduct extends Product {
     private String supplierID;
     private BigDecimal productPrice;
@@ -15,16 +19,21 @@ public class SupplierProduct extends Product {
         this.productQuantity = productQuantity;
     }
 
-    String getSupplierID() {
-        return supplierID;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SupplierProduct)) return false;
+        if (!super.equals(o)) return false;
+        SupplierProduct that = (SupplierProduct) o;
+        return Double.compare(that.productQuantity, productQuantity) == 0 &&
+                Objects.equals(supplierID, that.supplierID) &&
+                Objects.equals(productPrice, that.productPrice);
     }
 
-    BigDecimal getProductPrice() {
-        return productPrice;
-    }
+    @Override
+    public int hashCode() {
 
-    double getProductQuantity() {
-        return productQuantity;
+        return Objects.hash(super.hashCode(), supplierID, productPrice, productQuantity);
     }
 
     @Override

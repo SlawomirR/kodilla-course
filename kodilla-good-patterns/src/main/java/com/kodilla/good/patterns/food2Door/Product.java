@@ -1,7 +1,10 @@
 package com.kodilla.good.patterns.food2Door;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
+@Getter
 public abstract class Product {
     private String productID;
     private String productDesc;
@@ -11,18 +14,6 @@ public abstract class Product {
         this.productID   = productID;
         this.productDesc = productDesc;
         this.usedUnit    = usedUnit;
-    }
-
-    String getProductID() {
-        return productID;
-    }
-
-    String getProductDesc() {
-        return productDesc;
-    }
-
-    String getUsedUnit() {
-        return usedUnit;
     }
 
     @Override
@@ -37,7 +28,6 @@ public abstract class Product {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(productID, usedUnit);
     }
 
