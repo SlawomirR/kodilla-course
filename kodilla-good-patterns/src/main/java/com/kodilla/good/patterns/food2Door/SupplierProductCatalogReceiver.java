@@ -13,6 +13,7 @@ public class SupplierProductCatalogReceiver {
 
     boolean receive() {
         Map<Integer, SupplierProduct> productCatalog = supplierConnector.importProductCatalog();
+        System.out.println("Updating products catalog.");
         if (!productCatalog.isEmpty()) {
             repository.importSupplierProducts(productCatalog);
             return true;

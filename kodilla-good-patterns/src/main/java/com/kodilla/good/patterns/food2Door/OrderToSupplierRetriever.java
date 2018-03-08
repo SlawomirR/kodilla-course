@@ -10,7 +10,7 @@ class OrderToSupplierRetriever {
         Map<SupplierProduct, Integer> orderProductMap = new HashMap<>();
         orderProductMap.put(productsList.get(0), 150);
         orderProductMap.put(productsList.get(1), 200);
-
+        System.out.println("Ordering products.");
         OrderToSupplier.OrderToSupplierBuilder orderBuilder = OrderToSupplier.OrderToSupplierBuilder.aSupplierOrder();
         orderBuilder.withId(20180212103252L);
         orderBuilder.withDescription("Food replacement needed, ASAP!");
