@@ -1,37 +1,48 @@
 package com.kodilla.sodoku;
 
 import lombok.AccessLevel;
-import lombok.Setter;
+import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
-class SudokuProcessor {
+@Getter(AccessLevel.PACKAGE)
+final class Processor {
+    static final int SUDOKU_SIZE = 9;
+    static final int BOARD_SECTOR_SIZE = 3;
+    private static final String INITIAL_MESSAGE = "____________________________________________________________\n"
+            + "SUDOKU Game. Please, fill out the sudoku board with a desired numbers.\n"
+            + "For now you can input data as single or multiple rows at once e.g.: R1123456789,2980000321\n"
+            + "Important is to write \"R\" at the beginning of a row with data and row number at\n"
+            + "the beginning of each data set separated be comas. Zero means empty field.\n"
+            + "To control the game use proper words as follows:\n"
+            + "- new game: NEW\n"
+            + "- end game: EXIT\n"
+            + "- resolve game: SOLVE\n"
+            + "- play game: PLAY\n"
+            + "- to load example game: LOAD\n";
     private final String INFO_ABOUT_ADDING_POINTS = "You can add one or more points e.g.: \"P110,125,141,318\"" + System.lineSeparator()
             + "Every line with point(s) begin with 'P', followed by groups of 3 digits (row, column and value) separated by comma." + System.lineSeparator();
-    private SudokuSimpleSolver simpleSolver;
-    boolean isSolved;
-    @Setter(AccessLevel.PACKAGE)
-    private boolean simpleSolverSolution = false;
-    private SudokuBoard board;
+    static long solverIterationCounter = 0;
+    private Board board;
     private Validators validate;
-//    private ArrayDeque<List<Integer>> userPointsToCheckBeforePutToBoardQueue;
-    private Scanner scanner;
+    private final Scanner scanner;
     private Solutions solutions;
 
-    SudokuProcessor() {
-        board = new SudokuBoard();
-        validate = new Validators();
-        validate.setBoard(board);
-//        userPointsToCheckBeforePutToBoardQueue = new ArrayDeque<>();
+    Processor() {
+        board = new Board();
+        validate = new Validators(board);
         scanner = new Scanner(System.in);
-        solutions = new Solutions(); // TODO it deletes older info !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        solutions = new Solutions();
     }
 
-    boolean runTheGame() {
+    void runTheGame() {
         boolean endTheGame = false;
-        boolean result = false;
         String userInput;
         while ( ! endTheGame) {
+            System.out.println(INITIAL_MESSAGE);
             System.out.print("Input: ");
 
             userInput = scanner.next().trim().toUpperCase();
@@ -46,34 +57,46 @@ class SudokuProcessor {
                 case "RESOLVE":
                 case "ANSWER":
                     long startTime = System.currentTimeMillis();
-                    SudokuSimpleSolver.SOLVER_ITERATION_COUNTER = 0;
-                    simpleSolver = new SudokuSimpleSolver(board, solutions);
+                    solverIterationCounter = 0;
+                    SimpleSolver simpleSolver = new SimpleSolver(solutions);
+                    simpleSolver.firstCheckSudokuQuality(board);
+                    try {
+                        simpleSolver.sudokuSimpleSolver(board);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("I guess you put wrong Sudoku or take wrong steps in solving so we have trouble!");
+                    }
                     long stopTime = System.currentTimeMillis();
                     System.out.println("Solving sudoku by calculating takes: " + (stopTime - startTime) + "ms");
 
-                    if ( ! simpleSolver.isSolved) {
-                        System.out.println("Running guessing mode ...");
-//                    SudokuBacktrackSolver.SOLVER_ITERATION_COUNTER = 0;
-                        startTime = System.currentTimeMillis();
-                        new SudokuBacktrackSolver(board, solutions);
-                        stopTime = System.currentTimeMillis();
-                        System.out.println("Solving sudoku by guessing takes: " + (stopTime - startTime) + "ms");
+                    if (0 == solutions.getSolutionsCollector().size()) {
+                        System.out.println("The entered Sudoku is too difficult for algorithm based on calculations.");
                     }
+                    System.out.println("========================> Running guessing mode ...");
+                    startTime = System.currentTimeMillis();
+                    BacktrackSolver backtrackSolver = new BacktrackSolver(board, solutions);
+                    backtrackSolver.sudokuBacktrackSolver();
+                    stopTime = System.currentTimeMillis();
+                    System.out.println("Solving sudoku by guessing takes additional: " + (stopTime - startTime) + "ms");
+
+                    if (0 == solutions.getSolutionsCollector().size()) {
+                        System.out.println("The entered Sudoku is too difficult for algorithm based on simple guessing.");
+                    }
+                    System.out.println("========================> Running definite mode ...");
+                    DefiniteSolvingMethod definiteSolvingMethod = new DefiniteSolvingMethod(board, solutions);
+                    definiteSolvingMethod.definiteSolve();
                     if (solutions.getSolutionsCollector().size() > 0) {
                         System.out.println(solutions.getSolutionsCollector().toString());
                         System.out.println("CONGRATULATIONS, The number of SOLUTIONS is: " + solutions.getSolutionsCollector().size());
                     } else {
-                        System.out.println("Sudoku is too hard to solve by this algorithm.");
+                        System.out.println("Sudoku is too hard to solve by implemented algorithms ...");
+                        System.out.println("... so maybe it's not possible to solve it? Give it up.");
                     }
-                    // TODO to complete return proper value!!!!!
-                    endTheGame = true;
-                    result = false;
                     break;
-                case "NEW": // -new game
-                case "RESET": // TODO restart again - wczytac kopię i zaczac od poczatku
-                    // TODO confirm to RESET values
-                    // TODO method emptyTheBoard();
-                    break;
+                case "NEW":
+                    board = new Board();
+                    validate = new Validators(board);
+                    solutions = new Solutions();
+                    runTheGame();
                 case "FULL":
                 case "FINISH":
                 case "FINISHED":
@@ -82,26 +105,18 @@ class SudokuProcessor {
                 case "COMPLETE":
                     System.out.println(INFO_ABOUT_ADDING_POINTS);
                     System.out.println(board.toString());
-                    // TODO method play(); and deepCopy as base for guessing and repeating
                     break;
                 case "LOAD":
                 case "EXAMPLE":
                     loadStoredExamples();
-                    // TODO to complete the method loadStoredExamples();
-                    break;
-                case "AUTO":
-                case "GENERATE":
-                    // TODO method generateNewSudoku();
                     break;
                 default:
-//                    System.out.println("INFO: Option DEFAULT");
                     readEnteredNumbers(userInput);
             }
         }
-        return result;
     }
 
-    void loadStoredExamples() {
+    private void loadStoredExamples() {
         String userInput;
         String sudokuValue = "";
         Arrays.stream(StoredSudokuExamplesEnum.values()).forEach(System.out::println);
@@ -120,7 +135,7 @@ class SudokuProcessor {
         readEnteredNumbers(sudokuValue);
     }
 
-    void readEnteredNumbers(String userInput) {
+    private void readEnteredNumbers(String userInput) {
         ArrayDeque<List<Integer>> userPointsToCheckBeforePutToBoardQueue;
         System.out.println("INFO: processing: " + userInput);
 //        System.out.print("Enter next data: ");
@@ -129,7 +144,6 @@ class SudokuProcessor {
             System.out.println("WARNING: Wrong input: expected command word or numbers followed by R or P.");
             return;
         }
-        validate.setBoard(board);
         switch(userInput.charAt(0)) {
             case 'R':
                 int ROW_MIN_NUMBERS = 10;
@@ -151,9 +165,8 @@ class SudokuProcessor {
         System.out.println(board.toString());
     }
 
-    boolean putPointToBoard(int row, int column, int proposedValue) {
-        board.getSudokuElement(row, column).setValue(proposedValue);
-        board.getSudokuElement(row, column).getAvailableGuessValues().clear();
-        return true;
+    void putPointToBoard(int row, int column, int proposedValue) {
+        board.getElement(row, column).setValue(proposedValue);
+        board.getElement(row, column).getAvailableGuessValues().clear();
     }
 }

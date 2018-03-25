@@ -1,5 +1,6 @@
 package com.kodilla.sodoku;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -7,14 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@Getter
-final class SudokuElement {
+@Getter(AccessLevel.PACKAGE)
+final class Element {
     private static final int EMPTY = -1;
-
     private int value;
     private List<Integer> availableGuessValues;
 
-    SudokuElement() {
+    Element() {
         value = EMPTY;
         availableGuessValues = new LinkedList<>(Arrays.asList(1,2,3,4,5,6,7,8,9));
     }
@@ -22,11 +22,6 @@ final class SudokuElement {
     void setValue(int value) {
         this.value = value == 0 ? -1 : value;
     }
-
-    String printAllElementInfo() {
-        return "Value: " + value + " with guessTable: " + availableGuessValues.toString() + ".";
-    }
-
 
     @Override
     public String toString() {
@@ -39,15 +34,13 @@ final class SudokuElement {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SudokuElement)) return false;
-        SudokuElement that = (SudokuElement) o;
-        return value == that.value &&
-                Objects.equals(availableGuessValues, that.availableGuessValues);
+        if (!(o instanceof Element)) return false;
+        Element that = (Element) o;
+        return value == that.value;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(value, availableGuessValues);
+        return Objects.hash(value);
     }
 }

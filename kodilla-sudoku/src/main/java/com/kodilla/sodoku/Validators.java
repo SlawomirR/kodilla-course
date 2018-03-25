@@ -4,10 +4,11 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
 
-public class Validators {
-    private SudokuBoard board;
+final class Validators {
+    private final Board board;
+    private Board tempBoard = null;
 
-    void setBoard(SudokuBoard board) {
+    Validators(Board board) {
         this.board = board;
     }
 
@@ -49,26 +50,33 @@ public class Validators {
         return new ArrayDeque<>(temporaryQueue);
     }
 
-    void validatePointsAndPutToBoard(ArrayDeque<List<Integer>> userPointsToCheckBeforePutToBoardQueue, SudokuProcessor processor) {
+    void validatePointsAndPutToBoard(ArrayDeque<List<Integer>> userPointsToCheckBeforePutToBoardQueue, Processor processor) {
         if (userPointsToCheckBeforePutToBoardQueue.size() > 0) {
+
+            try {
+                tempBoard = board.deepCopy();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
             for (List<Integer> point : userPointsToCheckBeforePutToBoardQueue) {
                 if ( ! isValueAllowedToPut(point.get(0), point.get(1), point.get(2))) {
                     userPointsToCheckBeforePutToBoardQueue.clear();
+                    System.out.println("WARNING: Wrong point! Reenter with caution!:");
                     processor.runTheGame();
+                } else {
+                    tempBoard.getElement(point.get(0), point.get(1)).setValue(point.get(2));
                 }
             }
             while ( ! userPointsToCheckBeforePutToBoardQueue.isEmpty()) {
                 List<Integer> point = userPointsToCheckBeforePutToBoardQueue.poll();
                 processor.putPointToBoard(point.get(0), point.get(1), point.get(2));
             }
-        } else {
-            userPointsToCheckBeforePutToBoardQueue.clear();
         }
     }
 
     boolean isValueAppearedAsPossibleForGuessing(int row, int column, int proposedValue) {
         return isValueAppearedAsPossibleForGuessingInSector(row, column, proposedValue)
-                && isValueAppearedAsPossibleForGuessingInLines(row, column, proposedValue);
+                || isValueAppearedAsPossibleForGuessingInLines(row, column, proposedValue);
     }
 
     boolean isValueAllowedToPut(int row, int column, int proposedValue) {
@@ -76,35 +84,46 @@ public class Validators {
                 && isValueAllowedForSector(row, column, proposedValue);
     }
 
-    private boolean isValueAppearedAsPossibleForGuessingInSector(int row, int column, int proposedValue) {
-        int columnSector = column / SudokuGame.BOARD_SECTOR_SIZE;
-        int rowSector = row / SudokuGame.BOARD_SECTOR_SIZE;
-        for (int r = rowSector * SudokuGame.BOARD_SECTOR_SIZE; r < (rowSector + 1) * SudokuGame.BOARD_SECTOR_SIZE; r++) {
-            for (int c = columnSector * SudokuGame.BOARD_SECTOR_SIZE; c < (columnSector + 1) * SudokuGame.BOARD_SECTOR_SIZE; c++) {
-                SudokuSimpleSolver.SOLVER_ITERATION_COUNTER++;
-                return board.getSudokuRowList().get(r).getSudokuElementList().get(c).getAvailableGuessValues().contains(proposedValue);
+    private boolean isValueAppearedAsPossibleForGuessingInSector(int row, int col, int proposedValue) {
+        int colSector = col / Processor.BOARD_SECTOR_SIZE;
+        int rowSector = row / Processor.BOARD_SECTOR_SIZE;
+        for (int r = rowSector * Processor.BOARD_SECTOR_SIZE; r < (rowSector + 1) * Processor.BOARD_SECTOR_SIZE; r++) {
+            for (int c = colSector * Processor.BOARD_SECTOR_SIZE; c < (colSector + 1) * Processor.BOARD_SECTOR_SIZE; c++) {
+                Processor.solverIterationCounter++;
+                if (0 == board.getRowList().get(r).getElementList().get(c).getAvailableGuessValues().size()) {
+                    if (proposedValue == board.getRowList().get(r).getElementList().get(c).getValue()) {
+                        return true;
+                    }
+                } else {
+                    if (board.getRowList().get(r).getElementList().get(c).getAvailableGuessValues().contains(proposedValue)) {
+                        return true;
+                    }
+                }
             }
         }
-        return true;
+        return false;
     }
 
     private boolean isValueAppearedAsPossibleForGuessingInLines(int row, int column, int proposedValue) throws IllegalArgumentException {
-        for (int i = 0; i < SudokuGame.SUDOKU_SIZE; i++) {
-            SudokuSimpleSolver.SOLVER_ITERATION_COUNTER++;
-            return board.getSudokuRowList().get(row).getSudokuElementList().get(i).getAvailableGuessValues().contains(proposedValue)
-                    && board.getSudokuRowList().get(i).getSudokuElementList().get(column).getAvailableGuessValues().contains(proposedValue);
+        for (int i = 0; i < Processor.SUDOKU_SIZE; i++) {
+            Processor.solverIterationCounter++;
+            if (board.getRowList().get(row).getElementList().get(i).getAvailableGuessValues().contains(proposedValue)) {
+                return true;
+            }
+            if (board.getRowList().get(i).getElementList().get(column).getAvailableGuessValues().contains(proposedValue)) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
-    private boolean isValueAllowedForSector(int row, int column, int proposedValue) throws IllegalArgumentException {
-        int columnSector = column / SudokuGame.BOARD_SECTOR_SIZE;
-        int rowSector = row / SudokuGame.BOARD_SECTOR_SIZE;
-        for (int r = rowSector * SudokuGame.BOARD_SECTOR_SIZE; r < (rowSector + 1) * SudokuGame.BOARD_SECTOR_SIZE; r++) {
-            for (int c = columnSector * SudokuGame.BOARD_SECTOR_SIZE; c < (columnSector + 1) * SudokuGame.BOARD_SECTOR_SIZE; c++) {
-                SudokuSimpleSolver.SOLVER_ITERATION_COUNTER++;
-                int existedValue = board.getSudokuRowList().get(r).getSudokuElementList().get(c).getValue();
-                if (existedValue == proposedValue) {
+    private boolean isValueAllowedForSector(int row, int col, int proposedValue) throws IllegalArgumentException {
+        int colSector = col / Processor.BOARD_SECTOR_SIZE;
+        int rowSector = row / Processor.BOARD_SECTOR_SIZE;
+        for (int r = rowSector * Processor.BOARD_SECTOR_SIZE; r < (rowSector + 1) * Processor.BOARD_SECTOR_SIZE; r++) {
+            for (int c = colSector * Processor.BOARD_SECTOR_SIZE; c < (colSector + 1) * Processor.BOARD_SECTOR_SIZE; c++) {
+                Processor.solverIterationCounter++;
+                if (proposedValue == board.getRowList().get(r).getElementList().get(c).getValue()) {
                     return false;
                 }
             }
@@ -113,12 +132,12 @@ public class Validators {
     }
 
     private boolean isValueAllowedForLines(int row, int column, int proposedValue) {
-        for (int i = 0; i < SudokuGame.SUDOKU_SIZE; i++) {
-            SudokuSimpleSolver.SOLVER_ITERATION_COUNTER++;
-            if (proposedValue == board.getSudokuRowList().get(row).getSudokuElementList().get(i).getValue()) {
+        for (int i = 0; i < Processor.SUDOKU_SIZE; i++) {
+            Processor.solverIterationCounter++;
+            if (proposedValue == board.getRowList().get(row).getElementList().get(i).getValue()) {
                 return false;
             }
-            if (proposedValue == board.getSudokuRowList().get(i).getSudokuElementList().get(column).getValue()) {
+            if (proposedValue == board.getRowList().get(i).getElementList().get(column).getValue()) {
                 return false;
             }
         }

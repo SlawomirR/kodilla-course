@@ -1,10 +1,11 @@
 package com.kodilla.sodoku;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
+@Getter(AccessLevel.PACKAGE)
 @ToString
 @EqualsAndHashCode
 final class ForGuesses {

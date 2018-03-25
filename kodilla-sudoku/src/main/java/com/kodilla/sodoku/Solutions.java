@@ -1,19 +1,15 @@
 package com.kodilla.sodoku;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Getter(AccessLevel.PACKAGE)
 @ToString
 @EqualsAndHashCode
-class Solutions {
-    private Set<SudokuBoard> solutionsCollector;
+final class Solutions {
+    private Set<Board> solutionsCollector;
 
     Solutions() {
         this.solutionsCollector = new HashSet<>();
