@@ -14,4 +14,7 @@ import java.util.List;
 public interface CompanyDao extends CrudRepository<Company, Integer> {
     @Query
     List<Company> findPartialCompanyName(@Param("seekString") String seekString);
+
+    @Query
+    List<Company> findByCompaniesContainingName(@Param("PART_OF_NAME") String partOfName);
 }

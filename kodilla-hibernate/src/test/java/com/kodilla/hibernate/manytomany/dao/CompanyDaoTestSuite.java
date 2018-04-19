@@ -16,6 +16,7 @@ import java.util.List;
 public class CompanyDaoTestSuite {
     @Autowired
     CompanyDao companyDao;
+
     @Autowired
     private EmployeeDao employeeDao;
 
@@ -62,7 +63,7 @@ public class CompanyDaoTestSuite {
         Assert.assertNotEquals(0, greyMatterId);
         Assert.assertEquals(2, findingKovalsky.size());
         Assert.assertEquals(2, findPartialCompanyName.size());
-        findingKovalsky.stream().forEach(s -> System.out.println(s.getLastname() + " " + s.getFirstname()));
+        findingKovalsky.stream().forEach(s -> System.out.println(s.getLastName() + " " + s.getFirstName()));
         findPartialCompanyName.stream().forEach(s -> System.out.println(s.getName()));
 
         // CleanUp
