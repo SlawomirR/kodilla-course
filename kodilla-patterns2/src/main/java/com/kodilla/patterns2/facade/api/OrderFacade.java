@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 
 @Service
-public final class OrderFacade {
+//@EnableAspectJAutoProxy // we have one in ...calculator.Calculator class
+public /*final*/ class OrderFacade { // final - don't let us use aspects
     @Autowired
     private ShopService shopService;
 
