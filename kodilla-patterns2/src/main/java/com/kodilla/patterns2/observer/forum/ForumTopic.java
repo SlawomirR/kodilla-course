@@ -32,7 +32,7 @@ public class ForumTopic implements Observable {
     }
 
     @Override
-    public void removerObserver(Observer observer) {
+    public void removeObserver(Observer observer) {
         observers.remove(observer);
     }
 
