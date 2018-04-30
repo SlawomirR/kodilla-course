@@ -9,9 +9,9 @@ public class MentorTestSuite {
         // Given
         Mentor mentorAdPo = new Mentor("Adam", "Polny");
         Mentor mentorPiKo = new Mentor("Piotr", "Koronny");
-        StudentTasksQueue michlBlady = new MichalBlady();
-        StudentTasksQueue tomaszGniady = new TomaszGniady();
-        StudentTasksQueue grzegorzSniady = new GrzegorzSniady();
+        StudentTasksQueue michlBlady = new StudentTasksQueue("Michal Blady");
+        StudentTasksQueue tomaszGniady = new StudentTasksQueue("Tomasz Gniady");
+        StudentTasksQueue grzegorzSniady = new StudentTasksQueue("Grzegorz Sniady");
 
         michlBlady.registerMentor(mentorAdPo);
         tomaszGniady.registerMentor(mentorAdPo);
