@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StoredProcTestSuite {
     @Test
@@ -32,7 +33,7 @@ public class StoredProcTestSuite {
     @Test
     public void testUpdateBestsellers() throws SQLException {
         DbManager dbManager = DbManager.getInstance();
-        String sqlUpdate = "UPDATE BOOKS SET BESTSELLER=TRUE";
+        String sqlUpdate = "UPDATE BOOKS SET BESTSELLER=FALSE";
         Statement statement = dbManager.getConnection().createStatement();
         statement.executeUpdate(sqlUpdate);
         // When
@@ -41,10 +42,10 @@ public class StoredProcTestSuite {
         // Then
         String sqlCheckTable = "SELECT COUNT(*) HOW_MANY FROM BOOKS WHERE BESTSELLER=TRUE";
         ResultSet rs = statement.executeQuery(sqlCheckTable);
-        int howMany = 0;
+        int howMany = -1;
         if (rs.next()) {
-            howMany += rs.getInt("HOW_MANY");
+            howMany = rs.getInt("HOW_MANY");
         }
-        assertEquals(1, howMany);
+        assertTrue(howMany > 0);
     }
 }
