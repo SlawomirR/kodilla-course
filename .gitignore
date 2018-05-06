@@ -47,6 +47,4 @@ dist/
 nbdist/
 .nb-gradle/
 out/
-
-#### Temporarly
-application.properties
+bin/
