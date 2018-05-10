@@ -10,10 +10,10 @@ import java.sql.Statement;
 public class DbManagerTestSuite {
     @Test
     public void testConnect() throws SQLException {
-        //Given
-        //When
+        // Given
+        // When
         DbManager dbManager = DbManager.getInstance();
-        //Then
+        // Then
         Assert.assertNotNull(dbManager.getConnection());
     }
 
