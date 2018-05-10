@@ -9,7 +9,13 @@ public class IndexExceptionRunner {
 
         String movie = collection.get(0);
         System.out.println(movie);
-        String movie1 = collection.get(1);
-        System.out.println(movie1);
+        try {
+            String movie1 = collection.get(1);
+            System.out.println(movie1);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println(" ===> Expected exception: IndexOutOfBoundsException");
+        }
     }
 }
