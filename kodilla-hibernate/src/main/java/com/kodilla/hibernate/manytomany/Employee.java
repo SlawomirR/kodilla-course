@@ -23,7 +23,9 @@ public class Employee {
     private String lastName;
     private List<Company> companies = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,
+            targetEntity = Company.class,
+            fetch = FetchType.LAZY)
     @JoinTable(
             name = "JOIN_COMPANIES_EMPLOYEES",
             joinColumns = {@JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "EMPLOYEE_ID")},

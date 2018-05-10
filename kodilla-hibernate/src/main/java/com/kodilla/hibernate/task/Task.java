@@ -1,11 +1,15 @@
 package com.kodilla.hibernate.task;
 
 import com.kodilla.hibernate.tasklist.TaskList;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@NoArgsConstructor
+@ToString
 @NamedQueries( {
         @NamedQuery(
                 name = "Task.retrieveLongTasks",
@@ -36,15 +40,13 @@ public class Task {
     private TaskFinancialDetails taskFinancialDetails;
     private TaskList taskList;
 
-    public Task() {}
-
     public Task(String description, int duration) {
         this.description = description;
         this.created = new Date();
         this.duration = duration;
     }
 
-    @ManyToOne
+    @ManyToOne(targetEntity = TaskList.class)
     @JoinColumn(name = "TASKLIST_ID")
     public TaskList getTaskList() {
         return taskList;

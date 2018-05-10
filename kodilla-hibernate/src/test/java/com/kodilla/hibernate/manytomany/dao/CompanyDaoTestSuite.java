@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -20,9 +21,11 @@ public class CompanyDaoTestSuite {
     @Autowired
     private EmployeeDao employeeDao;
 
+    @Transactional
     @Test
     public void testSaveManyToMany(){
         // Given
+        long companyDaoInitial = companyDao.count();
         Employee johnSmith = new Employee("John", "Smith");
         Employee stephanieClarckson = new Employee("Stephanie", "Clarckson");
         Employee lindaKovalsky = new Employee("Linda", "Kovalsky");
@@ -52,28 +55,45 @@ public class CompanyDaoTestSuite {
         companyDao.save(softwareGarbage);
         int softwareGarbageId = softwareGarbage.getId();
         companyDao.save(dataMasters);
-        int dataMaestersId = dataMasters.getId();
+        int dataMastersId = dataMasters.getId();
         companyDao.save(greyMatter);
         int greyMatterId = greyMatter.getId();
         List<Employee> findingKovalsky = employeeDao.retrieveEmployeesWithName("Kovalsky");
         List<Company> findPartialCompanyName = companyDao.findPartialCompanyName("Sof%");
         // Then
-        Assert.assertNotEquals(0, softwareMachineId);
-        Assert.assertNotEquals(0, dataMaestersId);
-        Assert.assertNotEquals(0, greyMatterId);
-        Assert.assertEquals(2, findingKovalsky.size());
-        Assert.assertEquals(2, findPartialCompanyName.size());
-        findingKovalsky.stream().forEach(s -> System.out.println(s.getLastName() + " " + s.getFirstName()));
-        findPartialCompanyName.stream().forEach(s -> System.out.println(s.getName()));
-
-        // CleanUp
         try {
-        	companyDao.delete(softwareMachineId);
-        	companyDao.delete(softwareGarbageId);
-        	companyDao.delete(dataMaestersId);
-        	companyDao.delete(greyMatterId);
-        } catch (Exception e) {
-        	//do nothing
+            Assert.assertNotEquals(0, softwareMachineId);
+            Assert.assertNotEquals(0, dataMastersId);
+            Assert.assertNotEquals(0, softwareGarbageId);
+            Assert.assertNotEquals(0, greyMatterId);
+            Assert.assertEquals(2, findingKovalsky.size());
+            Assert.assertEquals(2, findPartialCompanyName.size());
+            findingKovalsky.forEach(s -> System.out.println(s.getLastName() + " " + s.getFirstName()));
+            findPartialCompanyName.forEach(s -> System.out.println(s.getName()));
+
+        /*} catch (Exception e) {
+            // do nothing*/
+        } finally {
+            // CleanUp
+            if (companyDao.existsById(softwareMachineId)) {
+                System.out.println(companyDao.findById(softwareMachineId));
+                companyDao.deleteById(softwareMachineId);
+            }
+            if (companyDao.existsById(softwareGarbageId)) {
+                System.out.println(companyDao.findById(dataMastersId));
+                companyDao.deleteById(softwareGarbageId);
+            }
+            if (companyDao.existsById(dataMastersId)) {
+                System.out.println(companyDao.findById(softwareGarbageId));
+                companyDao.deleteById(dataMastersId);
+            }
+            if (companyDao.existsById(greyMatterId)) {
+                System.out.println(companyDao.findById(greyMatterId));
+                companyDao.deleteById(greyMatterId);
+            }
+            companyDao.findAll().forEach(System.out::println);
+            long companyDaoEnd = companyDao.count();
+            Assert.assertEquals(companyDaoInitial, companyDaoEnd);
         }
     }
 }

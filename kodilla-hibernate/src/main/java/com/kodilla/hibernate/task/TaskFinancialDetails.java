@@ -1,18 +1,20 @@
 package com.kodilla.hibernate.task;
 
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "TASKS_FINANCIALS")
 public class TaskFinancialDetails {
     private int id;
     private BigDecimal price;
     private boolean paid;
-
-    public TaskFinancialDetails() {
-    }
 
     public TaskFinancialDetails(BigDecimal price, boolean paid) {
         this.price = price;
@@ -23,6 +25,7 @@ public class TaskFinancialDetails {
     @GeneratedValue
     @NotNull
     @Column(name = "ID", unique = true)
+    @JoinColumn(name = "taskFinancialDetails")
     public int getId() {
         return id;
     }

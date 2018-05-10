@@ -7,8 +7,8 @@ import java.util.List;
 
 @NamedNativeQuery(
         name = "Company.findPartialCompanyName",
-//        query = "SELECT * FROM COMPANIES WHERE COMPANY_NAME LIKE :seekString", //'%ter%'",
-        query = "SELECT * FROM COMPANIES WHERE MID(COMPANY_NAME, 1, 3) = :seekString",
+        query = "SELECT * FROM COMPANIES WHERE COMPANY_NAME LIKE :seekString", //'%ter%'",
+//        query = "SELECT * FROM COMPANIES WHERE MID(COMPANY_NAME, 1, 3) = :seekString",
         resultClass = Company.class
 )
 @NamedQuery(
@@ -22,7 +22,9 @@ public class Company {
     private String name;
     private List<Employee> employees = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "companies")
+    @ManyToMany(cascade = CascadeType.ALL,
+            mappedBy = "companies",
+            targetEntity = Employee.class)
     public List<Employee> getEmployees() {
         return employees;
     }

@@ -21,7 +21,7 @@ public class TaskListDaoTestSuite {
     private TaskListDao taskListDao;
     @Autowired
     private TaskDao taskDao;
-    private static String LISTNAME = "ToDoList";
+    private static final String LISTNAME = "ToDoList";
 
     @Test
     public void testNamedQueries() {
@@ -67,7 +67,10 @@ public class TaskListDaoTestSuite {
             Assert.assertEquals(2, durationLongerThanTasks.size());
         } finally {
             // CleanUp
-            taskListDao.delete(id);
+            if (taskListDao.existsById(id)) {
+                System.out.println(taskListDao.findById(id));
+                taskListDao.deleteById(id);
+            }
         }
     }
 
@@ -89,9 +92,15 @@ public class TaskListDaoTestSuite {
         taskListDao.save(taskList);
         int id = taskList.getId();
         // Then
-        Assert.assertNotEquals(0, id);
-        // CleanUp
-        taskListDao.delete(id);
+        try {
+            Assert.assertNotEquals(0, id);
+        } finally {
+            // CleanUp
+            if (taskListDao.existsById(id)) {
+                System.out.println(taskListDao.findById(id));
+                taskListDao.deleteById(id);
+            }
+        }
     }
 
     @Test
@@ -105,10 +114,16 @@ public class TaskListDaoTestSuite {
         // When
         List<TaskList> readTaskLists = taskListDao.findByListName("toDoList");
         // Then
-        Assert.assertEquals(1, readTaskLists.size());
-        // CleanUp
-        taskListDao.delete(idToDo);
-        long numberAfter = taskListDao.count();
-        Assert.assertEquals(("We have: " + numberAfter + "instead of " + numberOrig), numberOrig, numberAfter);
+        try {
+            Assert.assertEquals(1, readTaskLists.size());
+        } finally {
+            // CleanUp
+            if (taskListDao.existsById(idToDo)) {
+                System.out.println(taskListDao.findById(idToDo));
+                taskListDao.deleteById(idToDo);
+            }
+            long numberAfter = taskListDao.count();
+            Assert.assertEquals(("We have: " + numberAfter + "instead of " + numberOrig), numberOrig, numberAfter);
+        }
     }
 }

@@ -12,16 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
 public class EmployeesAndCompaniesFacadeTestSuite {
-//    private int id_0;
-//    private int id_1;
+    private int id_0, id_1;
+    private int id_emp0, id_emp1, id_emp2, id_emp3, id_emp4, id_emp5;
 
     @Autowired
     private EmployeesAndCompaniesFacade facade;
@@ -54,9 +53,15 @@ public class EmployeesAndCompaniesFacadeTestSuite {
         companies.get(1).setEmployees(employees.get(3));
         companies.get(1).setEmployees(employees.get(5));
 
-        companyDao.save(companies);
-//        id_0 = companies.get(0).getId();
-//        id_1 = companies.get(1).getId();
+        companyDao.saveAll(companies);
+        id_0 = companies.get(0).getId();
+        id_1 = companies.get(1).getId();
+        id_emp0 = companies.get(0).getEmployees().get(0).getId();
+        id_emp2 = companies.get(0).getEmployees().get(1).getId();
+        id_emp4 = companies.get(0).getEmployees().get(2).getId();
+        id_emp1 = companies.get(1).getEmployees().get(0).getId();
+        id_emp3 = companies.get(1).getEmployees().get(1).getId();
+        id_emp5 = companies.get(1).getEmployees().get(2).getId();
     }
 
     @Test
@@ -65,12 +70,24 @@ public class EmployeesAndCompaniesFacadeTestSuite {
         String partOfLastName = "os";
         int numberOfEmployeesCompany = facade.findByEmployeesContainingPartOfLastName(partOfLastName).size();
         // Then
-//        try {
+        try {
             Assert.assertEquals(3, numberOfEmployeesCompany);
-//        } finally {
-//            companyDao.delete(id_0);
-//            companyDao.delete(id_1);
-//        }
+        } finally {
+            if (companyDao.existsById(id_0)) {
+                System.out.println(companyDao.findById(id_0));
+                companyDao.deleteById(id_0);
+            }
+            if (companyDao.existsById(id_1)) {
+                System.out.println(companyDao.findById(id_1));
+                companyDao.deleteById(id_1);
+            }
+            for (Integer id_emp : Arrays.asList(id_emp0, id_emp1, id_emp2, id_emp3, id_emp4, id_emp5)) {
+                if (employeeDao.existsById(id_emp)) {
+                    System.out.println(employeeDao.findById(id_emp));
+                    employeeDao.deleteById(id_emp);
+                }
+            }
+        }
     }
 
     @Test
@@ -79,12 +96,23 @@ public class EmployeesAndCompaniesFacadeTestSuite {
         String partOfName = "B";
         int numbersOfCompaniesFound = facade.findByCompaniesContainingName(partOfName).size();
         // Then
-//        try {
+        try {
             Assert.assertEquals(1, numbersOfCompaniesFound);
-//        } finally {
-//            companyDao.delete(id_0);
-//            companyDao.delete(id_1);
-//        }
+        } finally {
+            System.out.println(companyDao.findById(id_0));
+            if (companyDao.existsById(id_0)) {
+                companyDao.deleteById(id_0);
+            }
+            System.out.println(companyDao.findById(id_1));
+            if (companyDao.existsById(id_1)) {
+                companyDao.deleteById(id_1);
+            }
+            for (Integer id_emp : Arrays.asList(id_emp0, id_emp1, id_emp2, id_emp3, id_emp4, id_emp5)) {
+                if (employeeDao.existsById(id_emp)) {
+                    System.out.println(employeeDao.findById(id_emp));
+                    employeeDao.deleteById(id_emp);
+                }
+            }
+        }
     }
 }
-

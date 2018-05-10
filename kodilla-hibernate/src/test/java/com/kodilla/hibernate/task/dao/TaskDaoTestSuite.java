@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,16 +25,19 @@ public class TaskDaoTestSuite {
         //Given
         Task task = new Task(DESCRIPTION, 30);
         task.setTaskFinancialDetails(new TaskFinancialDetails(new BigDecimal(120), false));
-
         //When
         taskDao.save(task);
         int id = task.getId();
-
-        //Then
-        Assert.assertNotEquals(0, id);
-
-        //CleanUp
-        taskDao.delete(id);
+        // Then
+        try {
+            Assert.assertNotEquals(0, id);
+        } finally {
+            // CleanUp
+            if (taskDao.existsById(id)) {
+                System.out.println(taskDao.findById(id));
+                taskDao.deleteById(id);
+            }
+        }
     }
 
     @Test
@@ -41,32 +45,49 @@ public class TaskDaoTestSuite {
         // Given
         int duration = 7;
         Task task = new Task(DESCRIPTION, duration);
-        // When
         taskDao.save(task);
-        // Then
         int id = task.getId();
         System.out.println(id);
-        Task readTask = taskDao.findOne(id);
+        // When
+        Optional<Task> readTask = taskDao.findById(id);
         System.out.println(readTask);
-        Assert.assertEquals(id, readTask.getId());
-        System.out.println(readTask.getId());
-        // CleanUp
-        taskDao.delete(id);
+        // Then
+        try {
+            Assert.assertEquals(id, readTask.get().getId());
+            System.out.println(readTask.get().getId());
+        } finally {
+            // CleanUp
+            if (taskDao.existsById(id)) {
+                System.out.println(" ===> We have ID: " + id);
+                System.out.println(taskDao.findById(id));
+                taskDao.deleteById(id);
+            }
+        }
     }
 
     @Test
     public void testTaskDaoFindByDuration() {
         // Given
         int givenDuration = 7;
+
         Task task = new Task(DESCRIPTION, givenDuration);
         taskDao.save(task);
+        int id = task.getId();
+
         int duration = task.getDuration();
         // When
         List<Task> readTasks = taskDao.findByDuration(duration);
         // Then
-        Assert.assertEquals(1, readTasks.size());
-        // CleanUp
-        int id = readTasks.get(0).getId();
-        taskDao.delete(id);
+        try {
+            Assert.assertEquals(1, readTasks.size());
+            Assert.assertEquals(givenDuration, readTasks.get(0).getDuration());
+        } finally {
+            // CleanUp
+            if (taskDao.existsById(id)) {
+                System.out.println(" ===> We have ID: " + id);
+                System.out.println(taskDao.findById(id));
+                taskDao.deleteById(id);
+            }
+        }
     }
 }
