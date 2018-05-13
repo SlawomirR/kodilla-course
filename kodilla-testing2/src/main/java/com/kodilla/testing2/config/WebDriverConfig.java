@@ -9,15 +9,16 @@ public class WebDriverConfig {
     public final static String CHROME = "CHROME_DRIVER";
 
     public static WebDriver getDriver(final String driver) {
-        System.setProperty("webdriver.gecko.driver", "kodilla-testing2/src/main/resources/geckodriver");
-        System.setProperty("webdriver.chrome.driver", "kodilla-testing2/src/main/resources/chromedriver");
+        System.setProperty("webdriver.gecko.driver", "src/main/resources/geckodriver");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver");
 
-        if (driver.equals(FIREFOX)) {
-            return new FirefoxDriver();
-        } else if (driver.equals(CHROME)) {
-            return new ChromeDriver();
-        } else {
-            return null;
+        switch (driver) {
+            case FIREFOX:
+                return new FirefoxDriver();
+            case CHROME:
+                return new ChromeDriver();
+            default:
+                return null;
         }
     }
 }
