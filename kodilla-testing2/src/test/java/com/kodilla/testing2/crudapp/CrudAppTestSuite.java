@@ -4,10 +4,8 @@ import com.kodilla.testing2.config.WebDriverConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,28 +16,28 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 public class CrudAppTestSuite {
-    private static final String XPATH_AJAX_PART = "//select[1]";
     private static final String BASE_URL = "https://slawomirr.github.io";
     private WebDriver driver;
     private Random generator;
+    private WebDriverWait wait;
 
     @Before
     public void initTest() {
         driver = WebDriverConfig.getDriver(WebDriverConfig.CHROME);
         driver.get(BASE_URL);
         generator = new Random();
-        while (!driver.findElement(By.xpath(XPATH_AJAX_PART)).isDisplayed()) {
-            try {
-                driver.navigate().refresh();
-                Thread.sleep(5_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        wait = new WebDriverWait(driver, 3);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].innerText = \'Asking Heroku to load data... please wait\'",
+                driver.findElement(By.xpath("/html/body/h1"))
+        );
+        waitForJQueryLoad(driver);
     }
 
     @After
     public void cleanUpAfterTest() {
+        sleepTime(3_000);
         driver.close();
     }
 
@@ -66,6 +64,8 @@ public class CrudAppTestSuite {
         taskName = "Task number " + fiveDigit;
         taskContent = taskName + " content";
 
+        waitForJQueryLoad(driver);
+
         WebElement name = driver.findElement(By.xpath(XPATH_TASK_NAME));
         name.sendKeys(taskName);
 
@@ -75,16 +75,12 @@ public class CrudAppTestSuite {
         WebElement addButton = driver.findElement(By.xpath(XPATH_ADD_BUTTON));
         addButton.click();
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println(" ===> taskName: " + taskName);
         return taskName;
     }
 
     private void sendTestTaskToTrello(String taskName) {
-        while (!driver.findElement(By.xpath(XPATH_AJAX_PART)).isDisplayed()) ;
+        waitForJQueryLoad(driver);
 
         driver.findElements(By.xpath("//div[@class=\"datatable__tasks-container\"]/*")).stream()
                 .filter(anyForm -> anyForm.findElement(By.xpath(".//p[@class=\"datatable__field-value\"]"))
@@ -93,11 +89,7 @@ public class CrudAppTestSuite {
                     WebElement selectBoard = theForm.findElement(By.xpath("./div/fieldset[2]/select[1]"));
                     (new Select(selectBoard)).selectByValue("5a9ef8cacec866c4ed4448d1");
 
-                    try {
-                        Thread.sleep(2_000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    waitForJQueryLoad(driver);
 
                     WebElement selectList = theForm.findElement(By.xpath("./div/fieldset[2]/select[2]"));
                     (new Select(selectList)).selectByValue("5a9f052fc31ef828f00e4fbd");
@@ -105,11 +97,7 @@ public class CrudAppTestSuite {
                     WebElement buttonCreateCard = theForm.findElement(By.xpath("./div/fieldset[2]/button"));
                     buttonCreateCard.click();
                 });
-        try {
-            Thread.sleep(3_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        wait.until(ExpectedConditions.alertIsPresent());
     }
 
     private boolean checkTaskExistsInTrello(String taskName) {
@@ -118,11 +106,7 @@ public class CrudAppTestSuite {
         WebDriver driverTrello = WebDriverConfig.getDriver(WebDriverConfig.CHROME);
         driverTrello.get(TRELLO_URL);
 
-        try {
-            Thread.sleep(3_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        waitForJQueryLoad(driverTrello);
         result = driverTrello.findElements(By.xpath("//*[@id=\"board\"]/*")).stream()
                 .filter(theSpan -> theSpan.getText().contains(taskName))
                 .collect(Collectors.toList())
@@ -133,12 +117,11 @@ public class CrudAppTestSuite {
     }
 
     private void deleteAddedTestTaskInCrudApp(String taskName) {
-        WebDriverWait wait = new WebDriverWait(driver, 3);
         wait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         alert.accept();
 
-        while (!driver.findElement(By.xpath(XPATH_AJAX_PART)).isDisplayed()) ;
+        waitForJQueryLoad(driver);
         driver.findElements(By.xpath("//div[@class=\"datatable__tasks-container\"]/*")).stream()
                 .filter(anyForm -> anyForm.findElement(By.xpath(".//p[@class=\"datatable__field-value\"]"))
                         .getText().equals(taskName))
@@ -147,8 +130,20 @@ public class CrudAppTestSuite {
                             deleteButton.click();
                         }
                 );
+        waitForJQueryLoad(driver);
+    }
+
+    private void waitForJQueryLoad(WebDriver currentDriver) {
+        WebDriverWait jsWait;
+        jsWait = new WebDriverWait(currentDriver, 120);
+        ExpectedCondition<Boolean> jQueryLoad = driver -> ((Long) ((JavascriptExecutor) driver)
+                .executeScript("return jQuery.active") == 0);
+        jsWait.until(jQueryLoad);
+    }
+
+    private void sleepTime(int miliSeconds) {
         try {
-            Thread.sleep(3_000);
+            Thread.sleep(miliSeconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
